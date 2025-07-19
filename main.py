@@ -416,4 +416,4 @@ def generate_loan_repayment(seller, buyer, price, down_payment, interest_rate,
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
