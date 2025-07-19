@@ -3,11 +3,33 @@ import os
 import shutil
 import zipfile
 from fpdf import FPDF
+from PyPDF2 import PdfReader, PdfWriter
+from PyPDF2.generic import NameObject, BooleanObject
 import datetime
 
 app = Flask(__name__)
 
 OUTPUT_DIR = 'output'
+TEMPLATE_DIR = 'contract-templates'
+
+
+def fill_pdf_form(template_name, output_name, field_values):
+    template_path = os.path.join(TEMPLATE_DIR, template_name)
+    if not os.path.exists(template_path):
+        return False
+    reader = PdfReader(template_path)
+    writer = PdfWriter()
+    for page in reader.pages:
+        writer.add_page(page)
+    if reader.trailer['/Root'].get('/AcroForm'):
+        acro = reader.trailer['/Root']['/AcroForm'].get_object()
+        acro.update({NameObject('/NeedAppearances'): BooleanObject(True)})
+        writer._root_object.update({NameObject('/AcroForm'): acro})
+        for page in writer.pages:
+            writer.update_page_form_field_values(page, field_values)
+    with open(os.path.join(OUTPUT_DIR, output_name), 'wb') as f:
+        writer.write(f)
+    return True
 
 
 def ensure_output_dir():
@@ -68,7 +90,8 @@ def generate():
     generate_waiver_service_contract(seller, buyer, current_date)
     generate_loan_application(buyer, buyer_address, buyer_dob, buyer_ssn,
                               buyer_income, price, current_date)
-    generate_loan_repayment(seller, buyer, price, down_payment, interest_rate,
+    generate_loan_repayment(seller, seller_address, buyer, buyer_address, vin,
+                            make, model, year, price, down_payment, interest_rate,
                             term_months, current_date)
 
     # Create ZIP
@@ -371,24 +394,49 @@ def generate_loan_application(buyer, buyer_address, buyer_dob, buyer_ssn,
     pdf.output(os.path.join(OUTPUT_DIR, 'loan_application.pdf'))
 
 
-def generate_loan_repayment(seller, buyer, price, down_payment, interest_rate,
-                            term_months, date):
+def generate_loan_repayment(seller, seller_address, buyer, buyer_address, vin,
+                            make, model, year, price, down_payment,
+                            interest_rate, term_months, date):
     try:
-        down_payment = float(down_payment)
-        price = float(price)
-        interest_rate = float(interest_rate) / 100 / 12  # monthly rate
-        term_months = int(term_months)
-        loan_amount = price - down_payment
-        if term_months > 0 and interest_rate > 0:
-            monthly_payment = (loan_amount * interest_rate *
-                               (1 + interest_rate)**term_months) / (
-                                   (1 + interest_rate)**term_months - 1)
-            monthly_payment = round(monthly_payment, 2)
-        else:
-            monthly_payment = loan_amount / term_months if term_months > 0 else loan_amount
+        down_payment_f = float(down_payment)
+        price_f = float(price)
+        interest_rate_f = float(interest_rate)
+        term_months_i = int(term_months)
     except ValueError:
-        loan_amount = float(price) - float(down_payment or 0)
-        monthly_payment = 'To be determined'
+        down_payment_f = 0.0
+        price_f = float(price or 0)
+        interest_rate_f = 0.0
+        term_months_i = int(term_months or 0)
+
+    field_map = {
+        'Lender': seller,
+        'Lender mailing address': seller_address,
+        'Borrower': buyer,
+        'Borrower mailing address': buyer_address,
+        'Make': make,
+        'Model': model,
+        'Year': year,
+        'VIN': vin,
+        'Loan': str(price_f),
+        'Amount': str(price_f),
+        'Amount 2': str(down_payment_f),
+        'per annum': f"{interest_rate_f}%",
+        'Repayment Terms': f"{term_months_i} months",
+        'Date': date,
+    }
+
+    if fill_pdf_form('Vehicle-Repayment-Agreement.pdf', 'loan_repayment.pdf', field_map):
+        return
+
+    # Fallback to basic PDF if template not found
+    monthly_rate = interest_rate_f / 100 / 12 if interest_rate_f else 0
+    loan_amount = price_f - down_payment_f
+    if term_months_i > 0 and monthly_rate > 0:
+        payment = (loan_amount * monthly_rate * (1 + monthly_rate)**term_months_i) / (
+            (1 + monthly_rate)**term_months_i - 1)
+        payment = round(payment, 2)
+    else:
+        payment = loan_amount / term_months_i if term_months_i > 0 else loan_amount
 
     pdf = FPDF()
     pdf.add_page()
@@ -402,14 +450,12 @@ def generate_loan_repayment(seller, buyer, price, down_payment, interest_rate,
     pdf.cell(0, 10, f'Borrower: {buyer}', ln=1)
     pdf.ln(5)
     pdf.cell(0, 10, f'Loan Amount: ${loan_amount}', ln=1)
-    pdf.cell(0, 10, f'Interest Rate: {interest_rate * 12 * 100}% APR', ln=1)
-    pdf.cell(0, 10, f'Term: {term_months} months', ln=1)
-    pdf.cell(0, 10, f'Monthly Payment: ${monthly_payment}', ln=1)
+    pdf.cell(0, 10, f'Interest Rate: {interest_rate_f}% APR', ln=1)
+    pdf.cell(0, 10, f'Term: {term_months_i} months', ln=1)
+    pdf.cell(0, 10, f'Monthly Payment: ${payment}', ln=1)
     pdf.ln(10)
-    pdf.multi_cell(
-        0, 10,
-        'The borrower agrees to repay the loan in monthly installments until paid in full.'
-    )
+    pdf.multi_cell(0, 10,
+        'The borrower agrees to repay the loan in monthly installments until paid in full.')
     pdf.ln(20)
     pdf.cell(0, 10, 'Borrower Signature: ___________________________', ln=1)
     pdf.output(os.path.join(OUTPUT_DIR, 'loan_repayment.pdf'))
