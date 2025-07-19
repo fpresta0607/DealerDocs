@@ -206,16 +206,19 @@
             <form action="/generate" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
                 
                 <div class="form-section">
-                    <div class="section-title">Dealership Information</div>
+                    <div class="section-title">
+                        <img src="/static/car-match-logo.png" alt="Car Match Chicago" style="height: 40px; margin-right: 15px;">
+                        Dealership Information
+                    </div>
                     <div class="form-group">
                         <label for="seller">Dealership Name <span class="required">*</span></label>
-                        <input type="text" id="seller" name="seller" required>
+                        <input type="text" id="seller" name="seller" value="Car Match Chicago" required readonly style="background-color: #f8f9fa;">
                     </div>
                     <div class="form-group">
                         <label for="seller_address">Dealership Address <span class="required">*</span></label>
-                        <textarea id="seller_address" name="seller_address" required placeholder="Street Address, City, State, ZIP"></textarea>
+                        <textarea id="seller_address" name="seller_address" required readonly style="background-color: #f8f9fa;">729 N Princeton Ave, Villa Park, IL 60181</textarea>
                     </div>
-                </div>
+                </div></div>
 
                 <div class="form-section">
                     <div class="section-title">Customer Information</div>
@@ -358,10 +361,10 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="logo">Dealership Logo</label>
-                            <div class="file-input" onclick="document.getElementById('logo').click()">
-                                <input type="file" id="logo" name="logo" accept="image/png, image/jpeg" style="display: none;" onchange="updateFileName(this)">
-                                <div id="file-text">📁 Click to upload logo (PNG or JPG)</div>
+                            <label>Dealership Logo</label>
+                            <div style="padding: 15px; background: #f8f9fa; border-radius: 8px; text-align: center;">
+                                <img src="/static/car-match-logo.png" alt="Car Match Chicago Logo" style="height: 60px;">
+                                <div style="margin-top: 10px; color: #6c757d; font-size: 0.9rem;">✅ Car Match Chicago Logo Configured</div>
                             </div>
                         </div>
                     </div>
@@ -432,14 +435,7 @@
             this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
         });
 
-        function updateFileName(input) {
-            const fileText = document.getElementById('file-text');
-            if (input.files.length > 0) {
-                fileText.textContent = '✅ ' + input.files[0].name;
-            } else {
-                fileText.textContent = '📁 Click to upload logo (PNG or JPG)';
-            }
-        }
+        
 
         function showRequirements() {
             const state = document.getElementById('state').value;

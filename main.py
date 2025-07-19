@@ -21,6 +21,11 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/static/<filename>')
+def static_files(filename):
+    return send_file(f'static/{filename}')
+
+
 @app.route('/generate', methods=['POST'])
 def generate():
     ensure_output_dir()
@@ -43,13 +48,8 @@ def generate():
     interest_rate = request.form.get('interest_rate', '0')
     term_months = request.form.get('term_months', '0')
 
-    logo_file = request.files.get('logo')
-    logo_path = None
-    if logo_file and logo_file.filename:
-        ext = os.path.splitext(logo_file.filename)[1].lower()
-        if ext in ('.png', '.jpg', '.jpeg'):
-            logo_path = os.path.join(OUTPUT_DIR, 'logo' + ext)
-            logo_file.save(logo_path)
+    # Use pre-configured Car Match Chicago logo
+    logo_path = 'static/car-match-logo.png'
 
     current_date = datetime.date.today().strftime('%Y-%m-%d')
 
@@ -84,9 +84,7 @@ def generate():
             if os.path.exists(pdf_path):
                 zipf.write(pdf_path, arcname=filename)
 
-    # Clean up logo if exists
-    if logo_path and os.path.exists(logo_path):
-        os.remove(logo_path)
+    # Logo is static file, no cleanup needed
 
     return render_template('complete.html')
 
