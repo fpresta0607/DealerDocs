@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AutoDoc Generator</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        form { max-width: 600px; }
+        label { display: block; margin-top: 10px; }
+        input, select, textarea { width: 100%; padding: 5px; }
+        textarea { height: 60px; }
+        #requirements { margin-top: 20px; font-style: italic; }
+    </style>
+</head>
+<body>
+    <h1>AutoDoc Generator</h1>
+    <form action="/generate" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+        <label for="seller">Seller Name (Dealership):</label>
+        <input type="text" id="seller" name="seller" required>
+
+        <label for="seller_address">Seller Address:</label>
+        <textarea id="seller_address" name="seller_address" required></textarea>
+
+        <label for="buyer">Buyer Name (Customer):</label>
+        <input type="text" id="buyer" name="buyer" required>
+
+        <label for="buyer_address">Buyer Address:</label>
+        <textarea id="buyer_address" name="buyer_address" required></textarea>
+
+        <label for="buyer_dob">Buyer DOB (MM/DD/YYYY, optional for loan):</label>
+        <input type="text" id="buyer_dob" name="buyer_dob">
+
+        <label for="buyer_ssn">Buyer SSN (optional for loan):</label>
+        <input type="text" id="buyer_ssn" name="buyer_ssn">
+
+        <label for="buyer_income">Buyer Monthly Income (optional for loan):</label>
+        <input type="text" id="buyer_income" name="buyer_income">
+
+        <label for="vin">Vehicle VIN:</label>
+        <input type="text" id="vin" name="vin" required>
+
+        <label for="make">Make:</label>
+        <input type="text" id="make" name="make" required>
+
+        <label for="model">Model:</label>
+        <input type="text" id="model" name="model" required>
+
+        <label for="year">Year:</label>
+        <input type="text" id="year" name="year" required>
+
+        <label for="mileage">Mileage:</label>
+        <input type="text" id="mileage" name="mileage" required>
+
+        <label for="price">Sale Price:</label>
+        <input type="text" id="price" name="price" required>
+
+        <label for="down_payment">Down Payment (optional for loan):</label>
+        <input type="text" id="down_payment" name="down_payment">
+
+        <label for="interest_rate">Interest Rate % (optional for loan):</label>
+        <input type="text" id="interest_rate" name="interest_rate">
+
+        <label for="term_months">Term in Months (optional for loan):</label>
+        <input type="text" id="term_months" name="term_months">
+
+        <label for="state">State:</label>
+        <select id="state" name="state" onchange="showRequirements()">
+            <option value="IL" selected>Illinois</option>
+            <option value="CA">California</option>
+            <option value="TX">Texas</option>
+            <option value="FL">Florida</option>
+        </select>
+
+        <label for="logo">Optional Logo (PNG or JPG):</label>
+        <input type="file" id="logo" name="logo" accept="image/png, image/jpeg">
+
+        <input type="submit" value="Generate Documents" style="margin-top: 20px;">
+    </form>
+
+    <div id="requirements"></div>
+
+    <script>
+        function showRequirements() {
+            var state = document.getElementById('state').value;
+            var reqDiv = document.getElementById('requirements');
+            var requirements = {
+                'IL': 'IL: Requires Bill of Sale, Odometer Disclosure, Seller\'s Report of Sale (VSD-703)',
+                'CA': 'CA: Requires Bill of Sale, Emissions Cert Notice',
+                'TX': 'TX: Requires Bill of Sale, Title Application (Form 130-U)',
+                'FL': 'FL: Requires Bill of Sale, Odometer Statement'
+            };
+            reqDiv.textContent = requirements[state] || 'No specific requirements listed.';
+        }
+
+        function validateForm() {
+            // HTML5 required handles basic validation, but add JS for completeness
+            var requiredFields = document.querySelectorAll('input[required], textarea[required]');
+            for (var i = 0; i < requiredFields.length; i++) {
+                if (!requiredFields[i].value.trim()) {
+                    alert('Please fill all required fields.');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        showRequirements();  // Show initial for IL
+    </script>
+</body>
+</html>
