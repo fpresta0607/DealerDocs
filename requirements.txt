@@ -2,3 +2,5 @@ Flask
 fpdf
 PyPDF2
 PyPDF2
+pdfplumber
+pdfplumber
