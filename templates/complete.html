@@ -1,15 +1,156 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Documents Ready</title>
+    <title>DealerDocs - Documents Ready</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; text-align: center; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            text-align: center;
+            padding: 50px 30px;
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: bounce 1s infinite alternate;
+        }
+        
+        @keyframes bounce {
+            from { transform: translateY(0px); }
+            to { transform: translateY(-10px); }
+        }
+        
+        h1 {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .brand {
+            color: #3498db;
+            font-weight: 800;
+        }
+        
+        p {
+            color: #6c757d;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .download-btn {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(46, 204, 113, 0.4);
+        }
+        
+        .back-btn {
+            background: transparent;
+            color: #6c757d;
+            padding: 12px 30px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .back-btn:hover {
+            color: #3498db;
+            border-color: #3498db;
+        }
+        
+        .file-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #3498db;
+        }
+        
+        .file-count {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
     </style>
 </head>
 <body>
-    <h1>Documents Generated Successfully!</h1>
-    <p>Click the button below to download the ZIP file containing all documents.</p>
-    <a href="/download" download><button style="padding: 10px 20px;">Download sale_packet.zip</button></a>
+    <div class="container">
+        <div class="success-icon">🎉</div>
+        <h1><span class="brand">DealerDocs</span> Package Ready!</h1>
+        <p>Your complete auto sales document package has been generated successfully and is ready for download.</p>
+        
+        <div class="file-info">
+            <div class="file-count">📁 10 Professional Documents Included</div>
+            <div style="font-size: 0.9rem; color: #6c757d; margin-top: 8px;">
+                Bill of Sale • Odometer Statement • Invoice • Seller's Report<br>
+                Power of Attorney • Buyer's Guide • Arbitration Agreement<br>
+                Service Contract Waiver • Loan Application • Repayment Agreement
+            </div>
+        </div>
+        
+        <a href="/download" download class="download-btn">
+            📥 Download Complete Package
+        </a>
+        
+        <br>
+        
+        <a href="/" class="back-btn">
+            ← Generate Another Package
+        </a>
+    </div>
 </body>
 </html>
