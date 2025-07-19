@@ -208,14 +208,12 @@
                 
                 <div class="form-section">
                     <div class="section-title">Dealership Information</div>
-                    <div class="form-group">
-                        <label for="seller">Dealership Name <span class="required">*</span></label>
-                        <input type="text" id="seller" name="seller" required value="Car Match Chicago">
+                    <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; border-left: 4px solid #2196f3;">
+                        <strong>Car Match Chicago</strong><br>
+                        729 N Princeton Ave, Villa Park, IL 60181
                     </div>
-                    <div class="form-group">
-                        <label for="seller_address">Dealership Address <span class="required">*</span></label>
-                        <textarea id="seller_address" name="seller_address" required placeholder="Street Address, City, State, ZIP">729 N Princeton Ave, Villa Park, IL 60181</textarea>
-                    </div>
+                    <input type="hidden" name="seller" value="Car Match Chicago">
+                    <input type="hidden" name="seller_address" value="729 N Princeton Ave, Villa Park, IL 60181">
                 </div>
 
                 <div class="form-section">
@@ -341,30 +339,21 @@
                 </div>
 
                 <div class="form-section">
-                    <div class="section-title">Location & Branding</div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="state">State <span class="required">*</span></label>
-                            <select id="state" name="state" onchange="showRequirements()" required>
-                                <option value="IL" selected>Illinois</option>
-                                <option value="CA">California</option>
-                                <option value="TX">Texas</option>
-                                <option value="FL">Florida</option>
-                                <option value="NY">New York</option>
-                                <option value="PA">Pennsylvania</option>
-                                <option value="OH">Ohio</option>
-                                <option value="MI">Michigan</option>
-                                <option value="GA">Georgia</option>
-                                <option value="NC">North Carolina</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="logo">Dealership Logo</label>
-                            <div class="file-input" onclick="document.getElementById('logo').click()">
-                                <input type="file" id="logo" name="logo" accept="image/png, image/jpeg" style="display: none;" onchange="updateFileName(this)">
-                                <div id="file-text">📁 Click to upload logo (PNG or JPG)</div>
-                            </div>
-                        </div>
+                    <div class="section-title">Location</div>
+                    <div class="form-group">
+                        <label for="state">State <span class="required">*</span></label>
+                        <select id="state" name="state" onchange="showRequirements()" required>
+                            <option value="IL" selected>Illinois</option>
+                            <option value="CA">California</option>
+                            <option value="TX">Texas</option>
+                            <option value="FL">Florida</option>
+                            <option value="NY">New York</option>
+                            <option value="PA">Pennsylvania</option>
+                            <option value="OH">Ohio</option>
+                            <option value="MI">Michigan</option>
+                            <option value="GA">Georgia</option>
+                            <option value="NC">North Carolina</option>
+                        </select>
                     </div>
                 </div>
 
@@ -433,14 +422,7 @@
             this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
         });
 
-        function updateFileName(input) {
-            const fileText = document.getElementById('file-text');
-            if (input.files.length > 0) {
-                fileText.textContent = '✅ ' + input.files[0].name;
-            } else {
-                fileText.textContent = '📁 Click to upload logo (PNG or JPG)';
-            }
-        }
+        
 
         function showRequirements() {
             const state = document.getElementById('state').value;
